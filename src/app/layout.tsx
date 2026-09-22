@@ -1,36 +1,37 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
-
 import { SiteHeader } from "@/components/layout/site-header";
+import { FloatingDock } from "@/components/layout/floating-dock";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://canboz.com"),
+  metadataBase: new URL("https://emirkaya.dev"), 
   title: {
-    default: "Can Boz | Yazılım Eğitimleri",
-    template: "%s | Can Boz",
+    default: "Emir Kaya | Full Stack & Cloud Developer",
+    template: "%s | Emir Kaya",
   },
   description:
-    "C, C#, React, Angular ve algoritma eğitimleri. Sıfırdan ileri seviyeye uygulamalı yazılım eğitimleri.",
+    "Full Stack Developer, Cloud & DevOps süreçleri, 3D Web geliştirme ve mikroservis mimarileri üzerine kişisel portfolyo.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr" suppressHydrationWarning>
-      <body className="antialiased">
+    <html lang="tr" className="dark" suppressHydrationWarning>
+      <body className="antialiased dark:bg-zinc-900">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem
+          forcedTheme="dark" 
           disableTransitionOnChange
         >
-          <main className="dark:bg-zinc-900">
+          <main className="pb-24"> 
             <SiteHeader />
             {children}
           </main>
+          <FloatingDock />
           <Toaster />
         </ThemeProvider>
       </body>

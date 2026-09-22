@@ -4,23 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/layout/logo";
-import { mainNav } from "@/config/navigation";
+import { navItems } from "@/config/navigation";
 import { cn } from "@/lib/utils";
-
-const mobileItemClass =
-  "block cursor-pointer p-4 text-center font-medium text-zinc-200 transition-colors hover:text-pink-300";
 
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
@@ -49,7 +40,6 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
-
   const close = () => setOpen(false);
 
   return (
@@ -61,11 +51,11 @@ export function MobileNav() {
       <SheetContent
         side="top"
         showCloseButton={false}
-        className="border-0 bg-gradient-to-r from-rose-500 to-pink-500 p-0"
+        className="border-0 bg-zinc-950 p-0"
       >
         <SheetTitle className="sr-only">Menü</SheetTitle>
 
-        <div className="flex bg-gradient-to-r from-violet-500 to-pink-500">
+        <div className="flex bg-zinc-900 border-b border-zinc-800">
           <Logo />
           <button
             type="button"
@@ -76,45 +66,17 @@ export function MobileNav() {
             <HamburgerIcon open />
           </button>
         </div>
-
-        <nav className="pb-2">
-          {mainNav.map((item) =>
-            item.children ? (
-              <Accordion key={item.title}>
-                <AccordionItem value={item.title} className="border-0">
-                  <AccordionTrigger
-                    className={cn(
-                      mobileItemClass,
-                      "justify-center gap-2 hover:no-underline",
-                    )}
-                  >
-                    {item.title}
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-0">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.title}
-                        href={child.href}
-                        onClick={close}
-                        className={mobileItemClass}
-                      >
-                        {child.title}
-                      </Link>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ) : (
-              <Link
-                key={item.title}
-                href={item.href}
-                onClick={close}
-                className={mobileItemClass}
-              >
-                {item.title}
-              </Link>
-            ),
-          )}
+        <nav className="flex flex-col pb-6 pt-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={close}
+              className="block cursor-pointer p-4 text-center text-lg font-medium text-zinc-300 transition-colors hover:text-emerald-400 hover:bg-zinc-900/50"
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
       </SheetContent>
     </Sheet>

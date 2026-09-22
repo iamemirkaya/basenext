@@ -15,8 +15,8 @@ export function Logo({ className }: LogoProps) {
       <Image
         src="/images/eklogo.png"
         alt="Can Boz"
-        width={50}
-        height={50}
+        width={75}
+        height={75}
         priority
       />
     </Link>

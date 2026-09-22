@@ -1,18 +1,11 @@
 export type NavItem = {
   label: string;
-  href?: string;
-  children?: { label: string; href: string }[];
+  href: string;
 };
 
 export const navItems: NavItem[] = [
-  { label: "Hakkımda", href: "#aboutme" },
-  {
-    label: "Abonelikler",
-    children: [
-      { label: "Bireysel Abonelik", href: "#membership" },
-      { label: "Kurumsal Abonelik", href: "#membership" },
-    ],
-  },
-  { label: "Eğitimler", href: "#courses" },
-  { label: "İletişim", href: "#contact" },
+  { label: "About", href: "#about" },
+  { label: "Tech Stack", href: "#tech-stack" },
+  { label: "Projects", href: "#projects" },
+  { label: "Contact", href: "#contact" },
 ];
