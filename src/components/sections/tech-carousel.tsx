@@ -57,7 +57,7 @@ export function TechCarousel() {
       <button
         type="button"
         onClick={() => scroll(-1)}
-        aria-label="Önceki teknolojiler"
+        aria-label="Previous technologies"
         className={cn(arrowButtonClass, "left-0")}
       >
         <ChevronLeft className="size-5" />
@@ -79,7 +79,7 @@ export function TechCarousel() {
       <button
         type="button"
         onClick={() => scroll(1)}
-        aria-label="Sonraki teknolojiler"
+        aria-label="Next technologies"
         className={cn(arrowButtonClass, "right-0")}
       >
         <ChevronRight className="size-5" />

@@ -31,7 +31,7 @@ export function MobileNav() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger aria-label="Menüyü aç" className="cursor-pointer">
+      <SheetTrigger aria-label="Open menu" className="cursor-pointer">
         <HamburgerIcon open={false} />
       </SheetTrigger>
 
@@ -40,14 +40,14 @@ export function MobileNav() {
         showCloseButton={false}
         className="border-0 p-0"
       >
-        <SheetTitle className="sr-only">Menü</SheetTitle>
+        <SheetTitle className="sr-only">Menu</SheetTitle>
 
         <div className="flex border-b bg-background">
           <Logo />
           <button
             type="button"
             onClick={close}
-            aria-label="Menüyü kapat"
+            aria-label="Close menu"
             className="my-auto ml-auto cursor-pointer pr-4"
           >
             <HamburgerIcon open />

@@ -1,167 +1,97 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
-import { m } from "motion/react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float, ContactShadows } from "@react-three/drei";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { m, useInView } from "motion/react";
+import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { ROBOT_COLORS, RobotModel } from "@/components/3d/robot-model";
 import { fadeUp } from "@/lib/motion";
 
-const ROBOT_COLORS = {
-  body: "#18181b",
-  panel: "#27272a",
-  joint: "#09090b",
-  glow: "#10b981",
-} as const;
+type ReadyHandler = (ready: boolean) => void;
 
-function GlowMaterial({ intensity }: { intensity: number }) {
+function Lights() {
   return (
-    <meshStandardMaterial
-      color={ROBOT_COLORS.glow}
-      emissive={ROBOT_COLORS.glow}
-      emissiveIntensity={intensity}
-      toneMapped={false}
-    />
+    <>
+      <hemisphereLight args={["#ffffff", ROBOT_COLORS.joint, 0.8]} />
+      <directionalLight position={[5, 6, 5]} intensity={2} />
+      <directionalLight position={[-4, 2, -3]} color={ROBOT_COLORS.glow} intensity={4} />
+      <directionalLight position={[4, 1, -3]} color={ROBOT_COLORS.glow} intensity={3} />
+    </>
   );
 }
 
-function RobotModel() {
-  const headRef = useRef<THREE.Group>(null);
-  const bodyRef = useRef<THREE.Group>(null);
-
-  const mousePosition = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      mousePosition.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mousePosition.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+function GroundShadow() {
+  const texture = useMemo(() => {
+    const size = 128;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const context = canvas.getContext("2d");
+    if (context) {
+      const gradient = context.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+      gradient.addColorStop(0, "rgba(0, 0, 0, 0.6)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, size, size);
+    }
+    return new THREE.CanvasTexture(canvas);
   }, []);
 
-  useFrame(() => {
-    if (!headRef.current || !bodyRef.current) return;
-
-    const targetX = (mousePosition.current.x * Math.PI) / 3;
-    const targetY = (mousePosition.current.y * Math.PI) / 4;
-
-    headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, targetX, 0.05);
-    headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, -targetY, 0.05);
-
-    bodyRef.current.rotation.y = THREE.MathUtils.lerp(bodyRef.current.rotation.y, targetX * 0.4, 0.02);
-  });
+  useEffect(() => () => texture.dispose(), [texture]);
 
   return (
-    <Float speed={2} rotationIntensity={0.2} floatIntensity={1.5}>
-      <group ref={bodyRef} position={[0, -0.6, 0]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[1.4, 1.5, 1]} />
-          <meshStandardMaterial color={ROBOT_COLORS.body} roughness={0.6} metalness={0.8} />
-        </mesh>
-        <mesh position={[0, 0.2, 0.51]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.25, 0.25, 0.05, 32]} />
-          <GlowMaterial intensity={1.5} />
-        </mesh>
-        <mesh position={[0, -0.3, 0.51]}>
-          <boxGeometry args={[0.8, 0.3, 0.05]} />
-          <meshStandardMaterial color={ROBOT_COLORS.panel} roughness={0.7} />
-        </mesh>
-        <mesh position={[-0.8, 0.5, 0]}>
-          <boxGeometry args={[0.4, 0.6, 0.8]} />
-          <meshStandardMaterial color={ROBOT_COLORS.joint} roughness={0.5} metalness={0.9} />
-        </mesh>
-        <mesh position={[0.8, 0.5, 0]}>
-          <boxGeometry args={[0.4, 0.6, 0.8]} />
-          <meshStandardMaterial color={ROBOT_COLORS.joint} roughness={0.5} metalness={0.9} />
-        </mesh>
-        <mesh position={[-1.1, -0.2, 0.3]}>
-          <boxGeometry args={[0.3, 0.7, 0.4]} />
-          <meshStandardMaterial color={ROBOT_COLORS.panel} roughness={0.5} metalness={0.8} />
-        </mesh>
-        <mesh position={[1.1, -0.2, 0.3]}>
-          <boxGeometry args={[0.3, 0.7, 0.4]} />
-          <meshStandardMaterial color={ROBOT_COLORS.panel} roughness={0.5} metalness={0.8} />
-        </mesh>
-        <mesh position={[0, 0.85, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.3, 16]} />
-          <meshStandardMaterial color={ROBOT_COLORS.joint} roughness={0.8} />
-        </mesh>
-        <group ref={headRef} position={[0, 1.4, 0]}>
-          <mesh>
-            <boxGeometry args={[1.2, 0.9, 1.1]} />
-            <meshStandardMaterial color={ROBOT_COLORS.panel} roughness={0.5} metalness={0.8} />
-          </mesh>
-          <mesh position={[0, 0, 0.56]}>
-            <boxGeometry args={[1.0, 0.7, 0.05]} />
-            <meshStandardMaterial color={ROBOT_COLORS.joint} roughness={0.9} metalness={0.1} />
-          </mesh>
-
-          <mesh position={[-0.25, 0.1, 0.6]}>
-            <boxGeometry args={[0.35, 0.12, 0.05]} />
-            <GlowMaterial intensity={2} />
-          </mesh>
-          <mesh position={[0.25, 0.1, 0.6]}>
-            <boxGeometry args={[0.35, 0.12, 0.05]} />
-            <GlowMaterial intensity={2} />
-          </mesh>
-          <mesh position={[-0.65, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
-            <meshStandardMaterial color={ROBOT_COLORS.joint} roughness={0.6} metalness={0.9} />
-          </mesh>
-          <mesh position={[0.65, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
-            <meshStandardMaterial color={ROBOT_COLORS.joint} roughness={0.6} metalness={0.9} />
-          </mesh>
-
-          <mesh position={[-0.71, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.1, 0.1, 0.02, 16]} />
-            <GlowMaterial intensity={1.5} />
-          </mesh>
-          <mesh position={[0.71, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.1, 0.1, 0.02, 16]} />
-            <GlowMaterial intensity={1.5} />
-          </mesh>
-          <mesh position={[0, 0.55, -0.2]}>
-            <cylinderGeometry args={[0.03, 0.03, 0.4, 8]} />
-            <meshStandardMaterial color={ROBOT_COLORS.panel} />
-          </mesh>
-          <mesh position={[0, 0.75, -0.2]}>
-            <sphereGeometry args={[0.08, 16, 16]} />
-            <GlowMaterial intensity={2} />
-          </mesh>
-        </group>
-        
-      </group>
-    </Float>
+    <mesh position={[0, -2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[3.5, 3.5]} />
+      <meshBasicMaterial map={texture} transparent depthWrite={false} />
+    </mesh>
   );
 }
 
-function SceneReady({ onReady }: { onReady: (ready: boolean) => void }) {
-  useEffect(() => onReady(true), [onReady]);
+function ShaderPrecompile({ onReady }: { onReady: ReadyHandler }) {
+  const { gl, scene, camera } = useThree();
+
+  useEffect(() => {
+    let active = true;
+    gl.compileAsync(scene, camera).then(() => active && onReady(true));
+    return () => {
+      active = false;
+    };
+  }, [gl, scene, camera, onReady]);
+
   return null;
 }
 
-export function RobotScene({ show }: { show: boolean }) {
+const Scene = memo(function Scene({ onReady }: { onReady: ReadyHandler }) {
+  return (
+    <>
+      <Lights />
+      <RobotModel />
+      <GroundShadow />
+      <ShaderPrecompile onReady={onReady} />
+    </>
+  );
+});
+
+export function RobotScene() {
+  const container = useRef<HTMLDivElement>(null);
+  const inView = useInView(container);
   const [ready, setReady] = useState(false);
 
   return (
     <m.div
+      ref={container}
       variants={fadeUp}
       initial="hidden"
-      animate={show && ready ? "show" : "hidden"}
+      animate={ready ? "show" : "hidden"}
       className="size-full"
     >
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ pointerEvents: "none" }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1.5} />
-        <Suspense fallback={null}>
-          <Environment preset="city" />
-          <RobotModel />
-          <ContactShadows position={[0, -2, 0]} opacity={0.6} scale={12} blur={2.5} far={4} />
-          <SceneReady onReady={setReady} />
-        </Suspense>
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 50 }}
+        dpr={[1, 1.5]}
+        frameloop={ready && inView ? "always" : "never"}
+        style={{ pointerEvents: "none" }}
+      >
+        <Scene onReady={setReady} />
       </Canvas>
     </m.div>
   );

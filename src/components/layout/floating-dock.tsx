@@ -3,19 +3,11 @@
 import { m, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import Link from "next/link";
 import { useRef } from "react";
-import { SiGithub, SiKaggle } from "react-icons/si";
-import { FaLinkedin } from "react-icons/fa";
 import { HiHome } from "react-icons/hi";
-import { MdEmail } from "react-icons/md";
+import { socialLinks } from "@/config/social";
 import { fadeUp, introTiming } from "@/lib/motion";
 
-const dockItems = [
-  { href: "#", icon: HiHome, label: "Home" },
-  { href: "https://github.com/iamemirkaya", icon: SiGithub, label: "GitHub" },
-  { href: "https://www.linkedin.com/in/iamemirkaya/", icon: FaLinkedin, label: "LinkedIn" },
-  { href: "https://www.kaggle.com/iamemirkaya", icon: SiKaggle, label: "Kaggle" },
-  { href: "mailto:iamemirkaya@gmail.com", icon: MdEmail, label: "Email" }, 
-];
+const dockItems = [{ label: "Home", href: "#", icon: HiHome }, ...socialLinks];
 
 export function FloatingDock() {
   const mouseX = useMotionValue(Infinity);

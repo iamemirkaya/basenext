@@ -55,7 +55,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  --spacing-hero: calc(100vh - 100px);
+  --spacing-hero: calc(100svh - 100px);
 
   --shadow-glow: 0 0 20px var(--glow);
   --drop-shadow-glow: 0 0 10px var(--glow-strong);
@@ -123,7 +123,7 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
+    @apply font-sans motion-safe:scroll-smooth;
   }
   body {
     @apply bg-background text-foreground antialiased;

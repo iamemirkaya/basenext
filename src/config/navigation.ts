@@ -4,8 +4,9 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { label: "About", href: "#aboutme" },
+  { label: "About", href: "#about" },
   { label: "Tech Stack", href: "#tech-stack" },
   { label: "Journey", href: "#journey" },
+  { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];

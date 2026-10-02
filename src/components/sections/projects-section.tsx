@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FiExternalLink } from "react-icons/fi";
-import { SiGithub, SiKaggle } from "react-icons/si";
+import { FaKaggle } from "react-icons/fa";
+import { SiGithub } from "react-icons/si";
 import {
   Card,
   CardContent,
@@ -15,7 +16,7 @@ import { projectsData } from "@/data/projects";
 
 const projectLinks = [
   { key: "githubUrl", label: "Source Code", icon: SiGithub, iconClassName: "size-4" },
-  { key: "kaggleUrl", label: "Kaggle Notebook", icon: SiKaggle, iconClassName: "size-4 text-kaggle" },
+  { key: "kaggleUrl", label: "Kaggle Notebook", icon: FaKaggle, iconClassName: "size-4 text-kaggle" },
   { key: "liveUrl", label: "Live Demo", icon: FiExternalLink, iconClassName: "size-4" },
 ] as const;
 
@@ -30,7 +31,7 @@ export function ProjectsSection() {
             <Card className="h-full transition-all duration-300 hover:shadow-glow hover:ring-brand-500/50">
               <CardHeader>
                 <CardTitle className="text-xl">{project.title}</CardTitle>
-                <CardDescription className="mt-2 line-clamp-3">
+                <CardDescription className="mt-2">
                   {project.description}
                 </CardDescription>
               </CardHeader>

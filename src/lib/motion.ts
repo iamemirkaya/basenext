@@ -8,7 +8,7 @@ export const introTiming = {
   headerStagger: 0.08,
   heroDelay: 0.5,
   heroStagger: 0.12,
-  dockDelay: 1.2,
+  dockDelay: 0.8,
 } as const;
 
 export const revealViewport = { once: true, amount: 0.2 } as const;

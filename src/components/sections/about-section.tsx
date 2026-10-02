@@ -39,7 +39,7 @@ export function AboutSection() {
                 </CardHeader>
                 <CardContent className="p-4 pt-0 text-muted-foreground sm:p-6">
                   <p>{item.period}</p>
-                  {item.summary && <p className="mt-2 line-clamp-2">{item.summary}</p>}
+                  {item.summary && <p className="mt-2">{item.summary}</p>}
                   <p className="mt-2 text-xs opacity-70">{item.skills}</p>
                 </CardContent>
               </Card>

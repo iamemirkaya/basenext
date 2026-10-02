@@ -9,7 +9,7 @@ export function Logo({ className }: LogoProps) {
   return (
     <Link
       href="/"
-      aria-label="Emir Kaya - Ana sayfa"
+      aria-label="Emir Kaya - Home"
       className={className ?? "flex items-center p-2"}
     >
       <Image

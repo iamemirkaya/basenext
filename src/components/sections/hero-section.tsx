@@ -1,23 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { m } from "motion/react";
 import { TypeAnimation } from "react-type-animation";
 import { fadeUp, introTiming, staggerContainer } from "@/lib/motion";
 
-const RobotScene = dynamic(
-  () => import("@/components/3d/robot").then((mod) => mod.RobotScene),
-  { ssr: false },
-);
+type RobotModule = typeof import("@/components/3d/robot");
+
+const loadRobotModule = () => import("@/components/3d/robot");
 
 const heroVariants = staggerContainer(introTiming.heroStagger, introTiming.heroDelay);
 
 export function HeroSection() {
   const [introDone, setIntroDone] = useState(false);
+  const [robot, setRobot] = useState<RobotModule | null>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    void loadRobotModule();
+  }, []);
+
+  useEffect(() => {
+    if (!introDone) return;
+    let active = true;
+    loadRobotModule().then((mod) => active && setRobot(mod));
+    return () => {
+      active = false;
+    };
+  }, [introDone]);
 
   return (
-    <section className="grid min-h-hero grid-cols-1 items-center gap-8 py-10 lg:grid-cols-12">
+    <section id="about" className="grid min-h-hero grid-cols-1 items-center gap-8 py-10 lg:grid-cols-12">
       <m.div
         variants={heroVariants}
         initial="hidden"
@@ -49,7 +62,7 @@ export function HeroSection() {
         </m.p>
       </m.div>
       <div className="col-span-1 h-100 w-full place-self-center md:h-125 lg:col-span-5">
-        <RobotScene show={introDone} />
+        {robot && <robot.RobotScene />}
       </div>
     </section>
   );

@@ -14,19 +14,16 @@ const brandFont = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://emirkaya.dev"),
-  title: {
-    default: "Emir Kaya | Full Stack & Cloud Developer",
-    template: "%s | Emir Kaya",
-  },
+  title: "Emir Kaya",
   description:
-    "Full Stack Developer, Cloud & DevOps süreçleri, 3D Web geliştirme ve mikroservis mimarileri üzerine kişisel portfolyo.",
+    "Personal portfolio of Emir Kaya, a Full Stack Developer working on Cloud & DevOps, 3D web development, and microservice architectures.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr" className={`${brandFont.variable} dark`} suppressHydrationWarning>
+    <html lang="en" className={`${brandFont.variable} dark`} suppressHydrationWarning>
       <body>
         <ThemeProvider
           attribute="class"
