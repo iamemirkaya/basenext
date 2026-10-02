@@ -13,7 +13,7 @@ const brandFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://emirkaya.dev"),
+  metadataBase: new URL("https://iamemirkaya.vercel.app"),
   title: "Emir Kaya",
   description:
     "Personal portfolio of Emir Kaya, a Full Stack Developer working on Cloud & DevOps, 3D web development, and microservice architectures.",
