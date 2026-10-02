@@ -10,15 +10,17 @@ export const ROBOT_COLORS = {
   panel: "#27272a",
   joint: "#09090b",
   glow: "#10b981",
+  sheen: "#3f3f46",
+  gloss: "#71717a",
 } as const;
 
 const GLOW_COLOR = new THREE.Color(ROBOT_COLORS.glow);
 
 const SURFACES = {
-  body: { color: ROBOT_COLORS.body, roughness: 0.4, metalness: 0.45 },
-  panel: { color: ROBOT_COLORS.panel, roughness: 0.4, metalness: 0.45 },
-  joint: { color: ROBOT_COLORS.joint, roughness: 0.5, metalness: 0.5 },
-  glass: { color: ROBOT_COLORS.joint, roughness: 0.3, metalness: 0.3 },
+  body: { color: ROBOT_COLORS.body, specular: ROBOT_COLORS.sheen, shininess: 60 },
+  panel: { color: ROBOT_COLORS.panel, specular: ROBOT_COLORS.sheen, shininess: 60 },
+  joint: { color: ROBOT_COLORS.joint, specular: ROBOT_COLORS.sheen, shininess: 30 },
+  glass: { color: ROBOT_COLORS.joint, specular: ROBOT_COLORS.gloss, shininess: 120 },
 } as const;
 
 const BLINK_INTERVAL = 4;
@@ -28,6 +30,16 @@ const STATUS_BAR_HEIGHT = 0.18;
 const HOVER_RING_OFFSETS = [0, 0.5];
 const HOVER_RING_PERIOD = 1.6;
 const SIDES = [-1, 1] as const;
+const WAVE = {
+  side: -1,
+  start: 0.3,
+  raised: 0.7,
+  end: 1.9,
+  lowered: 2.3,
+  angle: 2.4,
+  amplitude: 0.35,
+  speed: 14,
+} as const;
 
 type Side = (typeof SIDES)[number];
 type Pointer = RefObject<{ x: number; y: number }>;
@@ -66,7 +78,7 @@ type GlowMaterialProps = {
 };
 
 function Surface({ type }: { type: keyof typeof SURFACES }) {
-  return <meshStandardMaterial {...SURFACES[type]} />;
+  return <meshPhongMaterial {...SURFACES[type]} />;
 }
 
 function GlowMaterial({ intensity, pulse = 0, speed = 2, phase = 0 }: GlowMaterialProps) {
@@ -182,14 +194,31 @@ function Thruster() {
   );
 }
 
+function waveWeight(time: number) {
+  const { smoothstep } = THREE.MathUtils;
+  return smoothstep(time, WAVE.start, WAVE.raised) * (1 - smoothstep(time, WAVE.end, WAVE.lowered));
+}
+
 function Arm({ side }: { side: Side }) {
   const arm = useRef<THREE.Group>(null);
+  const waveTime = useRef(0);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     if (!arm.current) return;
     const swing = Math.sin(clock.elapsedTime * 1.6 + (side === 1 ? 0 : Math.PI));
-    arm.current.rotation.x = swing * 0.12;
-    arm.current.rotation.z = side * (0.06 + swing * 0.02);
+    const rest = side * (0.06 + swing * 0.02);
+
+    if (side !== WAVE.side || waveTime.current >= WAVE.lowered) {
+      arm.current.rotation.x = swing * 0.12;
+      arm.current.rotation.z = rest;
+      return;
+    }
+
+    waveTime.current = Math.min(waveTime.current + delta, WAVE.lowered);
+    const wave = waveWeight(waveTime.current);
+    const raised = side * WAVE.angle + Math.sin(waveTime.current * WAVE.speed) * WAVE.amplitude;
+    arm.current.rotation.x = swing * 0.12 * (1 - wave);
+    arm.current.rotation.z = THREE.MathUtils.lerp(rest, raised, wave);
   });
 
   return (

@@ -7,27 +7,22 @@ import { fadeUp, introTiming, staggerContainer } from "@/lib/motion";
 
 type RobotModule = typeof import("@/components/3d/robot");
 
-const loadRobotModule = () => import("@/components/3d/robot");
-
 const heroVariants = staggerContainer(introTiming.heroStagger, introTiming.heroDelay);
 
 export function HeroSection() {
-  const [introDone, setIntroDone] = useState(false);
   const [robot, setRobot] = useState<RobotModule | null>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-    void loadRobotModule();
-  }, []);
-
-  useEffect(() => {
-    if (!introDone) return;
     let active = true;
-    loadRobotModule().then((mod) => active && setRobot(mod));
+    const robotModule = import("@/components/3d/robot");
+    const timer = setTimeout(() => {
+      robotModule.then((mod) => active && setRobot(mod));
+    }, introTiming.robotDelay * 1000);
     return () => {
       active = false;
+      clearTimeout(timer);
     };
-  }, [introDone]);
+  }, []);
 
   return (
     <section id="about" className="grid min-h-hero grid-cols-1 items-center gap-8 py-10 lg:grid-cols-12">
@@ -35,7 +30,6 @@ export function HeroSection() {
         variants={heroVariants}
         initial="hidden"
         animate="show"
-        onAnimationComplete={() => setIntroDone(true)}
         className="col-span-1 mt-10 place-self-center text-center lg:col-span-7 lg:mt-20 lg:place-self-start lg:text-left"
       >
         <m.h1 variants={fadeUp} className="text-4xl font-bold sm:text-5xl lg:text-7xl">

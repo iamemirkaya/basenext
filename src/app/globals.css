@@ -122,6 +122,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Motion runs reveals as compositor `transform` animations, which reducedMotion does not cover. */
+  @media (prefers-reduced-motion: reduce) {
+    [style*="translateY"] {
+      transform: none !important;
+    }
+  }
   html {
     @apply font-sans motion-safe:scroll-smooth;
   }
