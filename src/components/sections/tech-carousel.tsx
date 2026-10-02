@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { m } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { TechCard } from "@/components/sections/tech-card";
 import { techStackData } from "@/types/tech-stack";
+import { revealViewport, staggerContainer } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
+const trackVariants = staggerContainer(0.1);
+
+const arrowButtonClass =
+  "absolute z-10 flex size-10 cursor-pointer items-center justify-center rounded-full border bg-card shadow-lg transition-colors hover:border-brand-500 hover:text-primary";
 
 export function TechCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -47,30 +54,33 @@ export function TechCarousel() {
       onMouseEnter={() => setIsPaused(true)}  
       onMouseLeave={() => setIsPaused(false)} 
     >
-      {/* Sol Ok Butonu */}
       <button
         type="button"
         onClick={() => scroll(-1)}
         aria-label="Önceki teknolojiler"
-        className="absolute left-0 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-zinc-200 shadow-lg transition-colors hover:border-emerald-500 hover:text-emerald-400"
+        className={cn(arrowButtonClass, "left-0")}
       >
         <ChevronLeft className="size-5" />
       </button>
 
-      <div
+      <m.div
         ref={trackRef}
-        className="flex snap-x gap-4 overflow-x-auto scroll-smooth px-2 pb-5 pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        variants={trackVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={revealViewport}
+        className="flex snap-x gap-4 overflow-x-auto scroll-smooth px-2 pb-5 pt-2 scrollbar-none"
       >
         {techStackData.map((item, index) => (
           <TechCard key={item.slug} item={item} index={index} />
         ))}
-      </div>
+      </m.div>
 
       <button
         type="button"
         onClick={() => scroll(1)}
         aria-label="Sonraki teknolojiler"
-        className="absolute right-0 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-zinc-200 shadow-lg transition-colors hover:border-emerald-500 hover:text-emerald-400"
+        className={cn(arrowButtonClass, "right-0")}
       >
         <ChevronRight className="size-5" />
       </button>

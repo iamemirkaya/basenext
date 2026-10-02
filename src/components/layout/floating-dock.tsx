@@ -1,12 +1,13 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { m, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import Link from "next/link";
 import { useRef } from "react";
 import { SiGithub, SiKaggle } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { HiHome } from "react-icons/hi";
 import { MdEmail } from "react-icons/md";
+import { fadeUp, introTiming } from "@/lib/motion";
 
 const dockItems = [
   { href: "#", icon: HiHome, label: "Home" },
@@ -20,7 +21,13 @@ export function FloatingDock() {
   const mouseX = useMotionValue(Infinity);
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center rounded-full border border-zinc-800 bg-zinc-950/80 px-4 py-3 shadow-2xl backdrop-blur-md">
+    <m.div
+      variants={fadeUp}
+      custom={introTiming.dockDelay}
+      initial="hidden"
+      animate="show"
+      className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center rounded-full border bg-popover/80 px-4 py-3 shadow-2xl backdrop-blur-md"
+    >
       <div 
         className="flex items-end gap-3"
         onMouseMove={(e) => mouseX.set(e.pageX)}
@@ -28,11 +35,11 @@ export function FloatingDock() {
       >
         {dockItems.map((item) => (
           <DockIcon key={item.label} mouseX={mouseX} href={item.href} label={item.label}>
-            <item.icon className="h-full w-full text-zinc-300 transition-colors group-hover:text-emerald-400" />
+            <item.icon className="size-full text-secondary-foreground transition-colors group-hover:text-primary" />
           </DockIcon>
         ))}
       </div>
-    </div>
+    </m.div>
   );
 }
 
@@ -42,7 +49,7 @@ function DockIcon({
   label,
   children,
 }: {
-  mouseX: any;
+  mouseX: MotionValue<number>;
   href?: string;
   label: string;
   children: React.ReactNode;
@@ -59,15 +66,15 @@ function DockIcon({
 
   const content = (
     <div className="group relative">
-      <motion.div
+      <m.div
         ref={ref}
         style={{ width, height: width }}
-        className="flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 p-2 shadow-sm transition-colors hover:border-emerald-500/50 hover:bg-zinc-800"
+        className="flex items-center justify-center rounded-full border bg-card p-2 shadow-sm transition-colors hover:border-brand-500/50 hover:bg-muted"
       >
         {children}
-      </motion.div>
+      </m.div>
       
-      <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 scale-0 rounded-md bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-200 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+      <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 scale-0 rounded-md bg-muted px-2 py-1 text-xs font-medium opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
         {label}
       </div>
     </div>

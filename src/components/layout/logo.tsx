@@ -9,12 +9,12 @@ export function Logo({ className }: LogoProps) {
   return (
     <Link
       href="/"
-      aria-label="Can Boz - Ana sayfa"
+      aria-label="Emir Kaya - Ana sayfa"
       className={className ?? "flex items-center p-2"}
     >
       <Image
         src="/images/eklogo.png"
-        alt="Can Boz"
+        alt="Emir Kaya"
         width={75}
         height={75}
         priority

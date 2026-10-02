@@ -10,7 +10,7 @@ export function ContactSection() {
           href="#" 
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center space-x-3 rounded-xl border border-gray-300 bg-white px-5 py-2 text-zinc-900 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110"
+          className="flex items-center justify-center space-x-3 rounded-xl bg-foreground px-5 py-2 text-background transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110"
         >
           <Image 
             src="/images/Whatsapp.png" 
