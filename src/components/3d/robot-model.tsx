@@ -4,24 +4,42 @@ import { useEffect, useMemo, useRef, type RefObject } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Float, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
+import { resolveColorToken } from "@/lib/theme-color";
 
-export const ROBOT_COLORS = {
-  body: "#18181b",
-  panel: "#27272a",
-  joint: "#09090b",
-  glow: "#10b981",
-  sheen: "#3f3f46",
-  gloss: "#71717a",
+const COLOR_TOKENS = {
+  body: "--gray-900",
+  panel: "--gray-800",
+  joint: "--gray-950",
+  glow: "--brand-500",
+  sheen: "--gray-700",
+  gloss: "--gray-500",
 } as const;
 
-const GLOW_COLOR = new THREE.Color(ROBOT_COLORS.glow);
+type SurfaceType = "body" | "panel" | "joint" | "glass";
 
-const SURFACES = {
-  body: { color: ROBOT_COLORS.body, specular: ROBOT_COLORS.sheen, shininess: 60 },
-  panel: { color: ROBOT_COLORS.panel, specular: ROBOT_COLORS.sheen, shininess: 60 },
-  joint: { color: ROBOT_COLORS.joint, specular: ROBOT_COLORS.sheen, shininess: 30 },
-  glass: { color: ROBOT_COLORS.joint, specular: ROBOT_COLORS.gloss, shininess: 120 },
-} as const;
+function createRobotTheme() {
+  const colors = Object.fromEntries(
+    Object.entries(COLOR_TOKENS).map(([key, token]) => [key, resolveColorToken(token)]),
+  ) as Record<keyof typeof COLOR_TOKENS, string>;
+
+  return {
+    colors,
+    glow: new THREE.Color(colors.glow),
+    surfaces: {
+      body: { color: colors.body, specular: colors.sheen, shininess: 60 },
+      panel: { color: colors.panel, specular: colors.sheen, shininess: 60 },
+      joint: { color: colors.joint, specular: colors.sheen, shininess: 30 },
+      glass: { color: colors.joint, specular: colors.gloss, shininess: 120 },
+    } satisfies Record<SurfaceType, object>,
+  };
+}
+
+let robotTheme: ReturnType<typeof createRobotTheme> | null = null;
+
+export function getRobotTheme() {
+  robotTheme ??= createRobotTheme();
+  return robotTheme;
+}
 
 const BLINK_INTERVAL = 4;
 const BLINK_DURATION = 0.18;
@@ -77,18 +95,19 @@ type GlowMaterialProps = {
   phase?: number;
 };
 
-function Surface({ type }: { type: keyof typeof SURFACES }) {
-  return <meshPhongMaterial {...SURFACES[type]} />;
+function Surface({ type }: { type: SurfaceType }) {
+  return <meshPhongMaterial {...getRobotTheme().surfaces[type]} />;
 }
 
 function GlowMaterial({ intensity, pulse = 0, speed = 2, phase = 0 }: GlowMaterialProps) {
   const material = useRef<THREE.MeshBasicMaterial>(null);
-  const color = useMemo(() => GLOW_COLOR.clone().multiplyScalar(intensity), [intensity]);
+  const { glow } = getRobotTheme();
+  const color = useMemo(() => glow.clone().multiplyScalar(intensity), [glow, intensity]);
 
   useFrame(({ clock }) => {
     if (!pulse || !material.current) return;
     material.current.color
-      .copy(GLOW_COLOR)
+      .copy(glow)
       .multiplyScalar(intensity + Math.sin(clock.elapsedTime * speed + phase) * pulse);
   });
 
@@ -181,7 +200,7 @@ function Thruster() {
         >
           <ringGeometry args={[0.2, 0.24, 48]} />
           <meshBasicMaterial
-            color={ROBOT_COLORS.glow}
+            color={getRobotTheme().colors.glow}
             transparent
             blending={THREE.AdditiveBlending}
             depthWrite={false}

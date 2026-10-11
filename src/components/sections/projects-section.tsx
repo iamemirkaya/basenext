@@ -28,7 +28,7 @@ export function ProjectsSection() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2">
         {projectsData.map((project, index) => (
           <Reveal key={project.id} delay={(index % 2) * 0.15}>
-            <Card className="h-full transition-all duration-300 hover:shadow-glow hover:ring-brand-500/50">
+            <Card className="h-full transition-all duration-300 hover:shadow-glow hover:ring-highlight">
               <CardHeader>
                 <CardTitle className="text-xl">{project.title}</CardTitle>
                 <CardDescription className="mt-2">

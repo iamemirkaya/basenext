@@ -4,18 +4,20 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { m, useInView } from "motion/react";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { ROBOT_COLORS, RobotModel } from "@/components/3d/robot-model";
+import { getRobotTheme, RobotModel } from "@/components/3d/robot-model";
 import { fadeUp } from "@/lib/motion";
 
 type ReadyHandler = (ready: boolean) => void;
 
 function Lights() {
+  const { colors } = getRobotTheme();
+
   return (
     <>
-      <hemisphereLight args={["#ffffff", ROBOT_COLORS.joint, 0.8]} />
+      <hemisphereLight args={["#ffffff", colors.joint, 0.8]} />
       <directionalLight position={[5, 6, 5]} intensity={2} />
-      <directionalLight position={[-4, 2, -3]} color={ROBOT_COLORS.glow} intensity={4} />
-      <directionalLight position={[4, 1, -3]} color={ROBOT_COLORS.glow} intensity={3} />
+      <directionalLight position={[-4, 2, -3]} color={colors.glow} intensity={4} />
+      <directionalLight position={[4, 1, -3]} color={colors.glow} intensity={3} />
     </>
   );
 }

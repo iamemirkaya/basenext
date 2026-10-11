@@ -11,7 +11,7 @@ type TechCardProps = {
 export function TechCard({ item, index }: TechCardProps) {
   return (
     <m.div variants={fadeUp} className="min-w-7/10 snap-center md:min-w-3/10">
-      <div className="h-full transform-gpu rounded-xl border bg-card p-3 transition-all duration-300 hover:border-brand-500/50 hover:shadow-glow">
+      <div className="h-full transform-gpu rounded-xl border bg-card p-3 transition-all duration-300 hover:border-highlight hover:shadow-glow">
         <div className="relative h-48 w-full overflow-hidden rounded-lg bg-surface/50">
           <Image
             src={item.image}
