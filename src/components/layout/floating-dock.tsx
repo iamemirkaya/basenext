@@ -9,6 +9,9 @@ import { fadeUp, introTiming } from "@/lib/motion";
 
 const dockItems = [{ label: "Home", href: "#", icon: HiHome }, ...socialLinks];
 
+const ICON_SIZE = { rest: 36, active: 44 };
+const MAGNIFY_RANGE = 100;
+
 export function FloatingDock() {
   const mouseX = useMotionValue(Infinity);
 
@@ -53,7 +56,11 @@ function DockIcon({
     return val - bounds.x - bounds.width / 2;
   });
 
-  const widthSync = useTransform(distance, [-100, 0, 100], [36, 44, 36]);
+  const widthSync = useTransform(
+    distance,
+    [-MAGNIFY_RANGE, 0, MAGNIFY_RANGE],
+    [ICON_SIZE.rest, ICON_SIZE.active, ICON_SIZE.rest],
+  );
   const width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 });
 
   const content = (
@@ -61,7 +68,7 @@ function DockIcon({
       <m.div
         ref={ref}
         style={{ width, height: width }}
-        className="flex items-center justify-center rounded-full border bg-card p-2 shadow-sm transition-colors hover:border-brand-500/50 hover:bg-muted"
+        className="flex items-center justify-center rounded-full border bg-card p-2 shadow-sm transition-colors hover:border-highlight hover:bg-muted"
       >
         {children}
       </m.div>

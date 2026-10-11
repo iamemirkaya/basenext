@@ -11,8 +11,19 @@ import { cn } from "@/lib/utils";
 
 const trackVariants = staggerContainer(0.1);
 
+const AUTOPLAY_INTERVAL = 1500;
+const END_TOLERANCE = 10;
+
 const arrowButtonClass =
   "absolute z-10 flex size-10 cursor-pointer items-center justify-center rounded-full border bg-card shadow-lg transition-colors hover:border-brand-500 hover:text-primary";
+
+/** Card width plus the track's CSS gap, measured from layout so it follows any class change. */
+function getScrollStep(track: HTMLElement) {
+  const first = track.children[0] as HTMLElement | undefined;
+  const second = track.children[1] as HTMLElement | undefined;
+  if (!first) return 0;
+  return second ? second.offsetLeft - first.offsetLeft : first.offsetWidth;
+}
 
 export function TechCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -25,15 +36,12 @@ export function TechCarousel() {
       const track = trackRef.current;
       if (!track) return;
 
-      const firstItem = track.firstElementChild as HTMLElement | null;
-      const itemWidth = firstItem?.clientWidth ?? 0;
-
-      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - END_TOLERANCE) {
         track.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        track.scrollBy({ left: itemWidth + 16, behavior: "smooth" });
+        track.scrollBy({ left: getScrollStep(track), behavior: "smooth" });
       }
-    }, 1500); 
+    }, AUTOPLAY_INTERVAL);
 
     return () => clearInterval(interval);
   }, [isPaused]);
@@ -42,10 +50,7 @@ export function TechCarousel() {
     const track = trackRef.current;
     if (!track) return;
 
-    const firstItem = track.firstElementChild as HTMLElement | null;
-    const itemWidth = firstItem?.clientWidth ?? 0;
-
-    track.scrollBy({ left: direction * (itemWidth + 16), behavior: "smooth" });
+    track.scrollBy({ left: direction * getScrollStep(track), behavior: "smooth" });
   };
 
   return (

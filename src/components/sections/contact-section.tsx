@@ -19,7 +19,7 @@ export function ContactSection() {
               href={href}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="flex items-center gap-2 rounded-full border bg-card px-5 py-2.5 text-sm font-medium text-secondary-foreground transition-colors hover:border-brand-500/50 hover:text-primary"
+              className="flex items-center gap-2 rounded-full border bg-card px-5 py-2.5 text-sm font-medium text-secondary-foreground transition-colors hover:border-highlight hover:text-primary"
             >
               <Icon className="size-4" />
               {label}

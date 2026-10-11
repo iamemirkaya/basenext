@@ -36,6 +36,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-highlight: var(--highlight);
 
   --font-sans: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sans);
@@ -69,6 +70,8 @@
   --gray-200: oklch(92% 0.004 286.32);
   --gray-300: oklch(87.1% 0.006 286.286);
   --gray-400: oklch(70.5% 0.015 286.067);
+  --gray-500: oklch(55.2% 0.016 285.938);
+  --gray-700: oklch(37% 0.013 285.805);
   --gray-800: oklch(27.4% 0.006 286.033);
   --gray-900: oklch(21% 0.006 285.885);
   --gray-950: oklch(14.1% 0.005 285.823);
@@ -100,6 +103,7 @@
   --border: var(--gray-800);
   --input: oklch(100% 0 0 / 15%);
   --ring: var(--brand-500);
+  --highlight: color-mix(in oklab, var(--brand-500) 50%, transparent);
   --glow: color-mix(in oklab, var(--brand-500) 15%, transparent);
   --glow-strong: color-mix(in oklab, var(--primary) 80%, transparent);
 }

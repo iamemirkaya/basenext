@@ -30,7 +30,7 @@ export function AboutSection() {
               key={item.id}
               className={index % 2 === 0 ? "sm:col-start-2 sm:pl-8" : "sm:pr-8 sm:text-right"}
             >
-              <Card className="bg-surface/50 transition-shadow hover:ring-brand-500/50">
+              <Card className="bg-surface/50 transition-shadow hover:ring-highlight">
                 <CardHeader className="p-4 pb-2 sm:p-6">
                   <CardTitle className="text-xl">{item.title}</CardTitle>
                   <CardDescription className="font-medium text-primary">
